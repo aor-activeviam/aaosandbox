@@ -1,0 +1,99 @@
+spring:
+  jmx:
+    enabled: true
+
+server:
+  port: 9091
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,application/javascript,text/html,text/xml,text/plain,text/css,text/javascript,image/jpeg,image/png,image/svg+xml
+  servlet:
+    context-path: "/"
+    session:
+      cookie:
+        http-only: true
+        same-site: NONE
+        secure: true
+        name: ATOTISERVER_JSESSIONID
+
+logging:
+  level:
+    root: info
+
+security:
+  authentication:
+    in-memory:
+      users:
+        - username: admin
+          password: "{bcrypt}$2a$10$MbL1N4JogTOrDnnnTGYKQuqeKFa8TaC1fPTiC7GykIo2L12pODrKC"
+          authorities:
+            - ROLE_USER
+            - ROLE_ADMIN
+  tech-user:
+    passwords:
+      pivot: "{bcrypt}$2a$10$87iR319r7HvSvs5k9.jutuDzjuKqO6riilSjl/9u2LGDpn4/7.1he"
+      sba: "{bcrypt}$2a$10$QX8Im2Qh3s/qS9ypLlpEnuaVXtQTUz1XNS7goa9Ya7ofcZyuo2IdW"
+# --- ContentServer integration ---
+content-server:
+  db:
+    hibernate: org.hibernate.dialect.H2Dialect
+    show-sql: false
+    format-sql: false
+    hbm2ddl-auto: update
+    provider-class: org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl
+    url: jdbc:h2:file:./content_server;DB_CLOSE_DELAY=-1
+    default-auto-commit: false
+    driver-class-name: org.h2.Driver
+    jdbc-interceptors: org.apache.tomcat.jdbc.pool.interceptor.ConnectionState
+  security:
+    calculated-member-role: ROLE_USER
+    kpi-role: ROLE_USER
+
+
+atoti:
+  server:
+    security:
+      cookie-name: ${server.servlet.session.cookie.name}
+  jwt.key:
+    public: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArjAUPPdxeLKP0wrfzWgl+eH2wrYjZ9Dg6mF1Nw7gCqEf+K2PLlR+5e9hauUNshbYrRPZL3NfB4+o3D8E0Yq+TFIsZXrgeru6mQS55Vq/wn1FkDDsfGSQmliCT4j4Q7jZRmLDQFl8zhOL32Q+wBzVU0OJkFi7WLzX0NEa7eTA5K449khrW/yhf9NRX0T4DMCdufkx+4RbAu4A/As5e/JeaaUGbTX2tr5/IUx3IuNgZgg7QLsrdFEMrxPFKJ3+2S7rPyjiqCoOSS+ps/KZKeIZQn8HMvv7dFFi30OIt8knp0lj6CSUK2/H6eY6gwDL3GDU4VVPTCJnAB8Lg+mzA/L/TQIDAQAB
+    private: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCuMBQ893F4so/TCt/NaCX54fbCtiNn0ODqYXU3DuAKoR/4rY8uVH7l72Fq5Q2yFtitE9kvc18Hj6jcPwTRir5MUixleuB6u7qZBLnlWr/CfUWQMOx8ZJCaWIJPiPhDuNlGYsNAWXzOE4vfZD7AHNVTQ4mQWLtYvNfQ0Rrt5MDkrjj2SGtb/KF/01FfRPgMwJ25+TH7hFsC7gD8Czl78l5ppQZtNfa2vn8hTHci42BmCDtAuyt0UQyvE8Uonf7ZLus/KOKoKg5JL6mz8pkp4hlCfwcy+/t0UWLfQ4i3ySenSWPoJJQrb8fp5jqDAMvcYNThVU9MImcAHwuD6bMD8v9NAgMBAAECggEAS7YuNcnAEpxak3rYiGnKh/DF1yBgB1HtUTMHReU7UKN0SBz4bUTg24TPLS1eZJg1mhVUg6F8Hsc8uG7T41iRGo9lKL7eL7rFgplhS+XED/9vaxs4z2DO0afDDFsWvijsmAF5qNC8xL4OQA1MkSh3OPfUJV/MHugGTod1Uw3pIfw4u/KOM7vRiH18IXBoY2AGhKoe3wal3x751+Mxu1k86wGXSFdyBg/Ej/5UFLqmz9csbNF+9PkEUc+sIBwnVcTJJ4f2Vm5cdTEw7aV0ydbgcyk8I/Jy19BsFyycxoO40nVSNiXYQzhWbaF/Sz5e6h4mg2R1Og8buK+c0Aq1CJuiqQKBgQDX229C5Ncc2h38R7ozTblhDLI4tdxLInfpYy1dvca6xHOMQrMtCACR/fo+eunh+ENbNUaZ0kYM732wgRBIZkC3ecXykrbfOuZcMcyhFZ1ylNeiIisuzsZvsOR4KC6XTGyldAJJWJDG4CZP6rEzeVz78FVr/RXedlAJ9PwVUhFL/wKBgQDOlNeqNxseMbbxx1s6w4Sa1cjIxMVnstYZZ5v4VY34n3kZmAAY84LlGxljPpHqUhuKy50DBm0yKEPw9eqkVQVl5Z8PqP13Pgu0pvSAXMb54OHDBZOlSCPMqsLkLHTFZNGFtx8gDfs52nYgONHHFALIA6XHrbIXadbdeFuECNUkswKBgCCO04hWde+/Iniz5OzqE0UFIjiVjaWzjDyinewevMPc78S/JsFrDJL4qO8VoQNZa+ds8Low0ioPUXj27prM+YPzFR1Sbczb2HUdeczuMrJequuklbjYrWuZVcyd2vEtMNH/3nxrpGKq2nyBXLrz2keR54CDSvIkDEyELCWXHE7HAoGATjbCdLrKdKMj/eSZ4OTX1vusOn9tsjZeo128CsjxqLlQU2VeXBQOcgnRkebFvi76KJGwz81mGIBwQNIK1c8u7QaEM5yq4rPGIM65ccQuvbrsHzeEUCbBDyN0CIngaEAkp/jOOwewH5Zb9RUuL66e4vWmlbRo4j57UHzaQWJKuMsCgYEAjOFr/dGsj4odOvqfIwRduDyEaAD8bKS/uBova2P2DIVpkcvUjl+CB/5yU/5bJZgMBpKRitKG6PVCEJVRg4FFIP3dXHmMQ2g2ZYKSG3/yMmY56bT4jre5KSFKDTbiGp6xKawCmnMG0vzVbIKXJiALFifiN6uTA5CCA6awuJ8UIy0=
+  expiration: 43200
+
+content-service:
+  server: embedded
+  embedded:
+    hibernate:
+      show_sql: false
+      format_sql: true
+      use_sql_comments: false
+      generate_statistics: false
+      # The following line should be removed once the table is created
+      hbm2ddl.auto: update
+      # Connection Provider
+      connection:
+        provider_class: org.hibernate.hikaricp.internal.HikariCPConnectionProvider
+        autocommit: false
+      hikari:
+        maximumPoolSize: 10
+        maxLifetime: 300000
+        # we rely on the max lifetime
+        idleTimeout: 0
+        dataSourceClassName: org.h2.jdbcx.JdbcDataSource
+        dataSource:
+          url: "jdbc:h2:mem:content_service;DB_CLOSE_DELAY=-1;IGNORECASE=TRUE"
+        poolName: ContentServer-ConnectionPool
+otel:
+  javaagent:
+    enabled: false
+
+source:
+  csv:
+    synchronous-mode: false
+    topics:
+      - topic-name: Trades
+        store-name: Trades
+        path: "data/trades.csv"
+
+springdoc:
+  swagger-ui:
+    enabled : true
